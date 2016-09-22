@@ -15,9 +15,6 @@ namespace ABC.Database.Objects
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!"), MaxLength(256)]
-        public string Adress { get; set; }
-
-        [Required(ErrorMessage = "Non-Nullable!"), MaxLength(16)]
-        public string PhoneNumber { get; set; }
+        public string Name { get; set; }
     } 
 }
