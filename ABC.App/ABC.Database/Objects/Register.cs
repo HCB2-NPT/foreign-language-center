@@ -11,10 +11,13 @@ namespace ABC.Database.Objects
     [Table("Register")]
     public class Register
     {
-        [Column(Order=1), Key, Required(ErrorMessage = "Non-Nullable!")]
+        [Key]
+        public string RegisterID { get; set; }
+
+        [Column(Order=1), Required(ErrorMessage = "Non-Nullable!")]
         public string StudentId { get; set; }
 
-        [Column(Order = 2), Key, Required(ErrorMessage = "Non-Nullable!")]
+        [Column(Order = 2), Required(ErrorMessage = "Non-Nullable!")]
         public int TestScheduleId { get; set; }
 
         [ForeignKey("StudentId")]
