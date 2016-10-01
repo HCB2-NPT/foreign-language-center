@@ -11,10 +11,12 @@
 
 		<StackPanel Grid.Row="0" Background="#FFD75C37" HorizontalAlignment="Stretch">
 			<DockPanel Grid.Row="0" Height="64" HorizontalAlignment="Left">
-				<Button x:Name="btnTraCuuLichThi" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu lịch thi"/>
-				<Button x:Name="btnTraCuuKetQua" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu kết quả"/>
-				<Button x:Name="btnDangKyDuThi" Style="{DynamicResource ButtonToolbar}" Content="Đăng ký dự thi"/>
+				<Button x:Name="btnTraCuuLichThi" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu lịch thi" Click="clickTestSchedules" />
+				<Button x:Name="btnTraCuuKetQua" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu kết quả" Click="clickTestResults"/>
+				<Button x:Name="btnDangKyDuThi" Style="{DynamicResource ButtonToolbar}" Content="Đăng ký dự thi" Click="clickTestRegister"/>
 			</DockPanel>
-		</StackPanel>		
+		</StackPanel>
+		
+		<Grid Grid.Row="1" x:Name="MainContent"></Grid>		
     </Grid>
 </Window>
