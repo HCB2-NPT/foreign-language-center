@@ -8,7 +8,7 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Margin" Value="16,8" />
+        <Setter Property="Margin" Value="16" />
         <Setter Property="AutoGenerateColumns" Value="False" />
         <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="CanUserResizeColumns" Value="False" />

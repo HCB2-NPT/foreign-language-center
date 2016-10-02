@@ -8,6 +8,8 @@
                 <ResourceDictionary Source="Views/Styles/ButtonStyle.xaml" />
                 <ResourceDictionary Source="Views/Styles/LabelStyle.xaml" />
                 <ResourceDictionary Source="Views/Styles/DataGridStyle.xaml" />
+                <ResourceDictionary Source="Views/Styles/DatePickerStyle.xaml" />
+                <ResourceDictionary Source="Views/Styles/TextBoxStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
