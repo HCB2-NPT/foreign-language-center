@@ -24,5 +24,10 @@ namespace ABC.App.Views.Layouts.UserControls
         {
             InitializeComponent();
         }
+
+        private void clickDetails(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 }
