@@ -11,10 +11,16 @@ namespace ABC.Database.Objects
     [Table("Agency")]
     public class Agency
     {
-        [Key]
-        public int Id { get; set; }
+        [Key, StringLength(10)]
+        public string AgencyId { get; set; }
 
-        [Required(ErrorMessage = "Non-Nullable!"), MaxLength(256)]
+        [Required(ErrorMessage = "Non-Nullable!"), StringLength(256)]
         public string Name { get; set; }
+
+        //[Required(ErrorMessage = "Non-Nullable!"), MaxLength(256)]
+        //public string Address { get; set; }
+
+        //[Required(ErrorMessage = "Non-Nullable!"), MaxLength(16)]
+        //public string PhoneNumber { get; set; }
     } 
 }

@@ -11,7 +11,7 @@ namespace ABC.Database.Objects
     [Table("Certificate")]
     public class Certificate
     {
-        [Key]
+        [Key, StringLength(10)]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!")]

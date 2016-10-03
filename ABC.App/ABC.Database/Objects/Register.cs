@@ -12,24 +12,25 @@ namespace ABC.Database.Objects
     public class Register
     {
         [Key]
-        public string RegisterID { get; set; }
+        public int Id { get; set; }
 
-        [Column(Order=1), Required(ErrorMessage = "Non-Nullable!")]
-        public string StudentId { get; set; }
-
-        [Column(Order = 2), Required(ErrorMessage = "Non-Nullable!")]
-        public int TestScheduleId { get; set; }
-
-        [ForeignKey("StudentId")]
-        public virtual Student Student { get; set; }
-        
-        [ForeignKey("TestScheduleId")]
-        public virtual TestSchedule DateTest { get; set; }
-
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "Non-Nullable!")]
         public DateTime DateReg { get; set; }
 
-        [Required(ErrorMessage = "Non-Nullable!"), Range(0, 100, ErrorMessage = "Score must be between 0 and 100")]
+        [Range(0, 100, ErrorMessage = "Score must be between 0 and 100")]
         public double TestScore { get; set; }
+
+        [Required(ErrorMessage = "Non-Nullable!")]
+        public string StudentId { get; set; }
+
+        [Required(ErrorMessage = "Non-Nullable!")]
+        public string TestScheduleId { get; set; }
+
+        [ForeignKey("StudentId")]
+        public Student Student { get; set; }
+
+        [ForeignKey("TestScheduleId")]
+        public TestSchedule TestSchedule { get; set; }
     }
 }

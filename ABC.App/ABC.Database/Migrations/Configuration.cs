@@ -1,25 +1,49 @@
 namespace ABC.Database.Migrations
 {
-    using ABC.Database.Objects;
     using ABC.Database.ObjectContexts;
+    using ABC.Database.Objects;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<MyDatabaseContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ABC.Database.ObjectContexts.MyDatabaseContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationDataLossAllowed = false;
+            ContextKey = "ABC.Database.ObjectContexts.MyDatabaseContext";
         }
 
-        protected override void Seed(MyDatabaseContext context)
+        protected override void Seed(ABC.Database.ObjectContexts.MyDatabaseContext context)
         {
+            //  This method will be called after migrating to the latest version.
+
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  to avoid creating duplicate seed data. E.g.
+            //
+            //    context.People.AddOrUpdate(
+            //      p => p.FullName,
+            //      new Person { FullName = "Andrew Peters" },
+            //      new Person { FullName = "Brice Lambson" },
+            //      new Person { FullName = "Rowan Miller" }
+            //    );
+            //
+            
+            //create primary tables
             this.seedingAgency(context);
+            context.SaveChanges();
             this.seedingCertificate(context);
+            context.SaveChanges();
             this.seedingStudent(context);
-            this.seedingTestSchedules(context);
+            context.SaveChanges();
+            this.seedingTestSchedule(context);
+            context.SaveChanges();
+
+            //create complex tables
+            this.seedingRegister(context);
+            context.SaveChanges();
         }
 
         private void seedingAgency(MyDatabaseContext context)
@@ -36,10 +60,11 @@ namespace ABC.Database.Migrations
             for (int i = 0; i < agencies.Length; i++)
             {
                 context.Agencies.AddOrUpdate(
-                    a => a.Id,
-                    new Agency { 
-                        Id = i + 1, 
-                        Name = agencies[i] 
+                    a => a.AgencyId,
+                    new Agency
+                    {
+                        AgencyId = "AG" + (i + 1).ToString("00000"),
+                        Name = agencies[i]
                     }
                 );
             }
@@ -55,13 +80,14 @@ namespace ABC.Database.Migrations
                 "JPT",
                 "EL"
             };
-            
+
             for (int i = 0; i < certificates.Length; i++)
             {
                 context.Certificates.AddOrUpdate(
                     c => c.Name,
-                    new Certificate {
-                        Name = certificates[i], 
+                    new Certificate
+                    {
+                        Name = certificates[i],
                         Fee = rand.Next(50, 150) * 10000
                     }
                 );
@@ -101,7 +127,7 @@ namespace ABC.Database.Migrations
             }
         }
 
-        private void seedingTestSchedules(MyDatabaseContext context)
+        private void seedingTestSchedule(MyDatabaseContext context)
         {
             Random rand = new Random();
             int[] times = { 8, 14 };
@@ -115,36 +141,60 @@ namespace ABC.Database.Migrations
                 "EL"
             };
 
-            for (int index = 0; index < 100; index++) {
+            for (int index = 0; index < 100; index++)
+            {
                 month = rand.Next(3, 9);
                 day = rand.Next(7, 28);
                 numberOfStudents = rand.Next(1, 16);
 
                 context.TestSchedules.AddOrUpdate(
-                    t => t.Id,
+                    t => t.TestScheduleId,
                     new TestSchedule
                     {
-                        Id = index + 1,
+                        TestScheduleId = "TS" + (index + 1).ToString("00000"),
                         Date = new DateTime(2016, month, day, times[rand.Next(1)], 0, 0),
-                        AgencyId = rand.Next(1, 6),
+                        AgencyId = "AG" + rand.Next(1, 6).ToString("00000"),
                         CertificateId = certificates[rand.Next(certificates.Length)]
                     }
                 );
 
-                for (int sub_index = 0; sub_index < numberOfStudents; sub_index++)
-                {
-                    context.Registers.AddOrUpdate(
-                        r => r.RegisterID,
-                        new Register
-                        {
-                            RegisterID = String.Format("{0}{1}", (index + 1).ToString("00"), (sub_index + 1).ToString("00")),
-                            StudentId = "0250000" + rand.Next(1, 200).ToString("000"),
-                            TestScheduleId = index + 1,
-                            DateReg = new DateTime(2016, month, day - rand.Next(3, 4), rand.Next(8, 17), rand.Next(59), rand.Next(59)),
-                            TestScore = rand.Next(30, 100)
-                        }
-                    );
-                }
+                //for (int sub_index = 0; sub_index < numberOfStudents; sub_index++)
+                //{
+                //    context.Registers.AddOrUpdate(
+                //        r => r.Id,
+                //        new Register
+                //        {
+                //            //RegisterId = String.Format("{0}{1}", (index + 1).ToString("0000"), (sub_index + 1).ToString("0000")),
+                //            StudentId = "0250000" + rand.Next(1, 200).ToString("000"),
+                //            TestScheduleId = index + 1,
+                //            DateReg = new DateTime(2016, month, day - rand.Next(3, 4), rand.Next(8, 17), rand.Next(59), rand.Next(59)),
+                //            TestScore = rand.Next(30, 100)
+                //        }
+                //    );
+                //}
+            }
+        }
+
+        private void seedingRegister(MyDatabaseContext context)
+        {
+            Random rand = new Random();
+            var schedules = context.TestSchedules.ToList();
+            var schedulesCount = schedules.Count;
+            foreach (var st in context.Students.ToList())
+            {
+                var schedule = schedules[rand.Next(schedulesCount)];
+                var datereg = schedule.Date.AddDays(-rand.Next(3, 20));
+                context.Registers.AddOrUpdate(
+                    r => r.Id,
+                    new Register
+                    {
+                        //RegisterId = String.Format("{0}{1}", (index + 1).ToString("00"), (sub_index + 1).ToString("00")),
+                        StudentId = st.PersonalId,
+                        TestScheduleId = schedule.TestScheduleId,
+                        DateReg = new DateTime(2016, datereg.Month, datereg.Day, rand.Next(8, 17), rand.Next(59), rand.Next(59)),
+                        TestScore = rand.Next(30, 100)
+                    }
+                );
             }
         }
     }

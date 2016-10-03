@@ -1,6 +1,5 @@
 ﻿using ABC.App.Views.Layouts.UserControls;
 using ABC.Database.ObjectContexts;
-using ABC.Database.ObjectRepository;
 using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
@@ -38,11 +37,14 @@ namespace ABC.App
         {
             InitializeComponent();
 
-            DataContext = this;
             this.Loaded += (s, e) => MyDatabaseContext.Initialize();
+            this.Closed += (s, e) => Application.Current.Shutdown();
 
             // Defaut Function
-            MainContent.Children.Add(new TestScheduleWindow());
+            var def = new TestScheduleWindow();
+            def.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            def.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+            MainContent.Children.Add(def);
         }
 
         private void clickTestSchedules(object sender, RoutedEventArgs e)

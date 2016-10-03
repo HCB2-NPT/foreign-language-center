@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ABC.Database.ObjectRepositories;
+using ABC.Database.Objects;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +26,7 @@ namespace ABC.App.Views.Layouts.UserControls
         public TestScheduleWindow()
         {
             InitializeComponent();
-        }
-
-        private void clickDetails(object sender, RoutedEventArgs e)
-        {
-            
+            this.DataContext = new TestScheduleRepository().All;
         }
     }
 }

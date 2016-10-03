@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0233D34A-EFB9-42AA-9565-9511A6E92A3E}</ProjectGuid>
+    <ProjectGuid>{CFB21A35-09EE-4EC2-8939-75AFFB247676}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ABC.Database</RootNamespace>
@@ -48,13 +48,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\201609230911191_InitialCreation.cs" />
-    <Compile Include="Migrations\201609230911191_InitialCreation.Designer.cs">
-      <DependentUpon>201609230911191_InitialCreation.cs</DependentUpon>
+    <Compile Include="Migrations\201610021533408_InitialCreate.cs" />
+    <Compile Include="Migrations\201610021533408_InitialCreate.Designer.cs">
+      <DependentUpon>201610021533408_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610021539021_UpdateChanges_1.00.cs" />
+    <Compile Include="Migrations\201610021539021_UpdateChanges_1.00.Designer.cs">
+      <DependentUpon>201610021539021_UpdateChanges_1.00.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610021731104_UpdateChanges_1.01.cs" />
+    <Compile Include="Migrations\201610021731104_UpdateChanges_1.01.Designer.cs">
+      <DependentUpon>201610021731104_UpdateChanges_1.01.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610030208064_UpdateChanges_1.02.cs" />
+    <Compile Include="Migrations\201610030208064_UpdateChanges_1.02.Designer.cs">
+      <DependentUpon>201610030208064_UpdateChanges_1.02.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610030214450_UpdateChanges_1.03.cs" />
+    <Compile Include="Migrations\201610030214450_UpdateChanges_1.03.Designer.cs">
+      <DependentUpon>201610030214450_UpdateChanges_1.03.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201610030508364_UpdateChanges_1.04.cs" />
+    <Compile Include="Migrations\201610030508364_UpdateChanges_1.04.Designer.cs">
+      <DependentUpon>201610030508364_UpdateChanges_1.04.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\Init\Stores.cs" />
     <Compile Include="ObjectContexts\MyDatabaseContext.cs" />
-    <Compile Include="ObjectRepository\AgencyRepository.cs" />
+    <Compile Include="ObjectRepositories\StudentRepository.cs" />
+    <Compile Include="ObjectRepositories\TestScheduleRepository.cs" />
     <Compile Include="Objects\Agency.cs" />
     <Compile Include="Objects\Certificate.cs" />
     <Compile Include="Objects\Register.cs" />
@@ -68,10 +90,26 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201609230911191_InitialCreation.resx">
-      <DependentUpon>201609230911191_InitialCreation.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201610021533408_InitialCreate.resx">
+      <DependentUpon>201610021533408_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610021539021_UpdateChanges_1.00.resx">
+      <DependentUpon>201610021539021_UpdateChanges_1.00.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610021731104_UpdateChanges_1.01.resx">
+      <DependentUpon>201610021731104_UpdateChanges_1.01.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610030208064_UpdateChanges_1.02.resx">
+      <DependentUpon>201610030208064_UpdateChanges_1.02.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610030214450_UpdateChanges_1.03.resx">
+      <DependentUpon>201610030214450_UpdateChanges_1.03.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610030508364_UpdateChanges_1.04.resx">
+      <DependentUpon>201610030508364_UpdateChanges_1.04.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

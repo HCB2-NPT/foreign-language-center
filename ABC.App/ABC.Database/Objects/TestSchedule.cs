@@ -11,22 +11,23 @@ namespace ABC.Database.Objects
     [Table("TestSchedule")]
     public class TestSchedule
     {
-        [Key]
-        public int Id { get; set; }
+        [Key, StringLength(10)]
+        public string TestScheduleId { get; set; }
 
+        [DataType(DataType.Date)]
         [Required(ErrorMessage = "Non-Nullable!")]
         public DateTime Date { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!")]
-        public int AgencyId { get; set; }
+        public string AgencyId { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!")]
         public string CertificateId { get; set; }
 
         [ForeignKey("AgencyId")]
-        public virtual Agency Agency { get; set; }
+        public Agency Agency { get; set; }
 
         [ForeignKey("CertificateId")]
-        public virtual Certificate Certificate { get; set; }
+        public Certificate Certificate { get; set; }
     }
 }

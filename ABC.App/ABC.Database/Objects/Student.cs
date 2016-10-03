@@ -11,16 +11,16 @@ namespace ABC.Database.Objects
     [Table("Student")]
     public class Student
     {
-        [Key]
+        [Key, StringLength(10)]
         public string PersonalId { get; set; }
 
-        [Required(ErrorMessage = "Non-Nullable!"), MaxLength(64)]
+        [Required(ErrorMessage = "Non-Nullable!"), StringLength(64)]
         public string FullName { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!")]
         public DateTime Birthday { get; set; }
 
-        [Required(ErrorMessage = "Non-Nullable!"), MaxLength(16)]
+        [Required(ErrorMessage = "Non-Nullable!"), StringLength(16)]
         public string PhoneNumber { get; set; }
     }
 }

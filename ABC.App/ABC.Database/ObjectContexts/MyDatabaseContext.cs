@@ -1,7 +1,10 @@
-﻿using ABC.Database.Objects;
+﻿using ABC.Database.Migrations;
+using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +15,9 @@ namespace ABC.Database.ObjectContexts
     {
         public static void Initialize()
         {
+            //System.Data.Entity.Database.SetInitializer(new DropCreateDatabaseIfModelChanges<MyDatabaseContext>());
+            //System.Data.Entity.Database.SetInitializer(new MigrateDatabaseToLatestVersion<MyDatabaseContext, Configuration>());
+            //System.Data.Entity.Database.SetInitializer(new DropCreateDatabaseAlways<ApplicationDbContext>());
             using (var init = new MyDatabaseContext()) { }
         }
 

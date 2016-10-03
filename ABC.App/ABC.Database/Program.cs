@@ -1,5 +1,4 @@
-﻿
-using ABC.Database.ObjectContexts;
+﻿using ABC.Database.ObjectContexts;
 using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
@@ -13,6 +12,10 @@ namespace ABC.Database
     {
         static void Main(string[] args)
         {
+            new ObjectRepositories.StudentRepository().Add(new Student());
+
+            Console.WriteLine("Press any key to exit...");
+            Console.ReadKey(); 
         }
     }
 }
