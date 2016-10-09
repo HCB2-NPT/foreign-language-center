@@ -25,10 +25,12 @@ namespace ABC.Database.Migrations
             AddForeignKey("dbo.Register", "TestScheduleId", "dbo.TestSchedule", "TestScheduleId", cascadeDelete: true);
             DropColumn("dbo.Agency", "Id");
             DropColumn("dbo.TestSchedule", "Id");
+            CreateStores();
         }
         
         public override void Down()
         {
+            DropStores();
             AddColumn("dbo.TestSchedule", "Id", c => c.Int(nullable: false, identity: true));
             AddColumn("dbo.Agency", "Id", c => c.Int(nullable: false, identity: true));
             DropForeignKey("dbo.Register", "TestScheduleId", "dbo.TestSchedule");
@@ -47,6 +49,7 @@ namespace ABC.Database.Migrations
             CreateIndex("dbo.Register", "TestScheduleId");
             AddForeignKey("dbo.Register", "TestScheduleId", "dbo.TestSchedule", "Id", cascadeDelete: true);
             AddForeignKey("dbo.TestSchedule", "AgencyId", "dbo.Agency", "Id", cascadeDelete: true);
+
         }
     }
 }

@@ -12,10 +12,8 @@ namespace ABC.Database
     {
         static void Main(string[] args)
         {
-            new ObjectRepositories.StudentRepository().Add(new Student());
-
-            Console.WriteLine("Press any key to exit...");
-            Console.ReadKey(); 
+            //new ObjectRepositories.StudentRepository().Add(new Student());
+            //new ObjectRepositories.StudentRepository().Test();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace ABC.Database.Objects
 {
     [Table("TestSchedule")]
-    public class TestSchedule
+    public class TestSchedule 
     {
         [Key, StringLength(10)]
         public string TestScheduleId { get; set; }

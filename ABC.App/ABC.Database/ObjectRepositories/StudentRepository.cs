@@ -3,10 +3,13 @@ using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using ABC.Database.Helpers;
 
 namespace ABC.Database.ObjectRepositories
 {
@@ -47,6 +50,26 @@ namespace ABC.Database.ObjectRepositories
                 context.Database.ExecuteSqlCommand("exec dbo.AddStudent @id, @fn, @bd, @pn", p);
             }
             NotifyPropertyChanged("All");
+        }
+
+        public void Test()
+        {
+            var table = DataTableHelper.CreateCustomTable(new CustomColumn("Name", typeof(string)), new CustomColumn("AgencyId", typeof(string)));
+            using (var context = new MyDatabaseContext())
+            {
+                using (var con = context.Database.Connection)
+                {
+                    con.Open();
+                    DbCommand cmd = context.Database.Connection.CreateCommand();
+                    cmd.CommandText = "dbo.Test";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        DataTableHelper.ReadFromDataReader(reader, ref table);
+                    }
+                    con.Close();
+                }
+            }
         }
     }
 }

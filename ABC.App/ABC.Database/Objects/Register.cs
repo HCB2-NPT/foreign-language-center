@@ -19,7 +19,7 @@ namespace ABC.Database.Objects
         public DateTime DateReg { get; set; }
 
         [Range(0, 100, ErrorMessage = "Score must be between 0 and 100")]
-        public double TestScore { get; set; }
+        public double? TestScore { get; set; }
 
         [Required(ErrorMessage = "Non-Nullable!")]
         public string StudentId { get; set; }

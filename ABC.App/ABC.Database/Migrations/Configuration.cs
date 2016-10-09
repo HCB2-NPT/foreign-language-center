@@ -18,6 +18,7 @@ namespace ABC.Database.Migrations
 
         protected override void Seed(ABC.Database.ObjectContexts.MyDatabaseContext context)
         {
+           
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
@@ -44,6 +45,7 @@ namespace ABC.Database.Migrations
             //create complex tables
             this.seedingRegister(context);
             context.SaveChanges();
+
         }
 
         private void seedingAgency(MyDatabaseContext context)

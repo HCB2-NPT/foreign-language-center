@@ -65,12 +65,10 @@ namespace ABC.Database.Migrations
                         PhoneNumber = c.String(nullable: false, maxLength: 16),
                     })
                 .PrimaryKey(t => t.PersonalId);
-            CreateStores();
         }
         
         public override void Down()
         {
-            DropStores();
             DropForeignKey("dbo.Register", "StudentId", "dbo.Student");
             DropForeignKey("dbo.Register", "TestScheduleId", "dbo.TestSchedule");
             DropForeignKey("dbo.TestSchedule", "CertificateId", "dbo.Certificate");

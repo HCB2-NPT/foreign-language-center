@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\DataTableHelper.cs" />
     <Compile Include="Migrations\201610021533408_InitialCreate.cs" />
     <Compile Include="Migrations\201610021533408_InitialCreate.Designer.cs">
       <DependentUpon>201610021533408_InitialCreate.cs</DependentUpon>
