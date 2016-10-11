@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\DataTableHelper.cs" />
+    <Compile Include="Helpers\DbMyCommand.cs" />
     <Compile Include="Migrations\201610021533408_InitialCreate.cs" />
     <Compile Include="Migrations\201610021533408_InitialCreate.Designer.cs">
       <DependentUpon>201610021533408_InitialCreate.cs</DependentUpon>
@@ -76,6 +77,8 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Migrations\Init\Stores.cs" />
     <Compile Include="ObjectContexts\MyDatabaseContext.cs" />
+    <Compile Include="ObjectRepositories\CertificateRepository.cs" />
+    <Compile Include="ObjectRepositories\RegisterRepository.cs" />
     <Compile Include="ObjectRepositories\StudentRepository.cs" />
     <Compile Include="ObjectRepositories\TestScheduleRepository.cs" />
     <Compile Include="Objects\Agency.cs" />

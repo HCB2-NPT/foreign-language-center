@@ -7,25 +7,25 @@
     {
         public void CreateStores()
         {
-            //a
+            #region a dbo.AddStudent
             CreateStoredProcedure("dbo.AddStudent",
                 p => new
                 {
-                    PersonalID = p.String(),
-                    FullName = p.String(),
-                    BirthDay = p.DateTime(),
-                    PhoneNumber = p.String()
+                    p0 = p.String(),
+                    p1 = p.String(),
+                    p2 = p.DateTime(),
+                    p3 = p.String()
                 },
                 body:
             @" BEGIN
 	                SET TRANSACTION ISOLATION LEVEL read committed  
                     begin transaction
-                    if not exists (select PersonalID From Student where PersonalID = @PersonalID)
+                    if not exists (select PersonalID From Student where PersonalID = @p0)
                     begin
-                    if @BirthDay <= GetDate()
+                    if @p2 <= GetDate()
                     begin
 		                begin try
-			                Insert into Student values (@PersonalID,@FullName,@BirthDay,@PhoneNumber)
+			                Insert into Student values (@p0,@p1,@p2,@p3)
 			                commit transaction
 			                return
 		                end try
@@ -37,24 +37,24 @@
                     end
                 END"
             );
-
-            //b
+            #endregion
+            #region b dbo.AddRegister
             CreateStoredProcedure("dbo.AddRegister",
                 p => new
                 {
-                    studentid = p.String(),
-                    testschedule = p.String()
+                    p0 = p.String(),
+                    p1 = p.String()
                 },
                 body:
                 @"  BEGIN
                     begin transaction
                     SET TRANSACTION ISOLATION LEVEL read committed
-	                if not exists (select * from Register where @studentid=StudentId and @testschedule=TestScheduleId)
+	                if not exists (select * from Register where @p0=StudentId and @p1=TestScheduleId)
 	                    begin
 		                    begin try
 			                    declare @datereg datetime
 			                    set @datereg = GETDATE()
-			                    Insert into Register(StudentId,TestScheduleId,DateReg) values (@studentid,@testschedule,@datereg)
+			                    Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,@datereg)
 			                    commit transaction
                                 return
 		                    end try
@@ -65,31 +65,36 @@
 	                    end
                     END"
             );
-            //c
-            CreateStoredProcedure("dbo.CheckListTestSchedule",
+            #endregion
+            #region c dbo.ListTested
+            CreateStoredProcedure("dbo.ListTested",
                 p => new
                 {
-                    studentid = p.String()
+                    p0 = p.String()
                 },
                 body:
                 @"
                 Set transaction isolation level read uncommitted
                 begin transaction
-	                select [TestSchedule].[CertificateId] as c,[TestSchedule].[Date] as d,[Register].[TestScore] as t
-	                from [dbo].[TestSchedule] join [dbo].[Register] on [dbo].[TestSchedule].[TestScheduleId] = [dbo].[Register].[TestScheduleId]
-	                where ([TestSchedule].[Date]<=getdate() and 
-                    [Register].[StudentId] = @studentid )
-	                order by [Date] desc
-                commit transaction
+	                if exists (select * from Student where PersonalId=@p0)
+	                begin
+				        select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Certificate.Name,Fee
+				        from Agency,Register,TestSchedule,Certificate
+				        where 
+				        Agency.AgencyId=TestSchedule.AgencyId and
+				        TestSchedule.CertificateId = Certificate.Name and
+				        TestSchedule.TestScheduleId = Register.TestScheduleId and
+				        TestSchedule.Date  <= GETDATE() and
+                        Register.StudentID = @p0
+	                end
                 ");
-            
-            //d
-
+            #endregion
+            #region d dbo.RegisterTestOnline
             CreateStoredProcedure("dbo.RegisterTestOnline",
                 p => new
                 {
-                    studentid = p.String(),
-                    testid = p.String()
+                    p0 = p.String(),
+                    p1 = p.String()
                 },
                 body:
                 @"
@@ -97,11 +102,11 @@
                 begin transaction
 	                begin 
 		                declare @datereg datetime
-		                select @datereg=Date from TestSchedule where TestSchedule.TestScheduleId = @testid
+		                select @datereg=Date from TestSchedule where TestSchedule.TestScheduleId = @p1
 		                declare @dt datetime
 		                select @dt=Max(TestSchedule.Date)
 		                from TestSchedule,Register
-		                where TestSchedule.TestScheduleId = Register.TestScheduleId and StudentId = @studentid
+		                where TestSchedule.TestScheduleId = Register.TestScheduleId and StudentId = @p0
 
 		                if ((DATEDIFF(HOUR,@dt,@datereg)/24) < 5 and (DATEDIFF(HOUR,@dt,@datereg)/24) > -5) or Getdate()>@datereg
 		                begin
@@ -113,12 +118,12 @@
 			                declare @temp int 
 			                select @temp=count(Register.StudentId)
 			                from TestSchedule left join Register on TestSchedule.TestScheduleId = Register.TestScheduleId
-			                where TestSchedule.TestScheduleId = @testid
+			                where TestSchedule.TestScheduleId = @p1
 			                group by TestSchedule.TestScheduleId
 			
 			                if @temp < 16
 			                begin try
-				                Insert into Register(StudentId,TestScheduleId,DateReg) values (@studentid,@testid,@datereg)
+				                Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,@datereg)
 				                commit transaction
 			                end try
 			                begin catch
@@ -128,60 +133,55 @@
 		                end
 	                end
                 ");
-
-            //e
-            CreateStoredProcedure("dbo.ListTested",
+            #endregion
+            #region e dbo.CheckListTestSchedule
+            CreateStoredProcedure("dbo.CheckListTestSchedule",
                 p => new
                 {
-                    certificateid = p.String()
+                    p0 = p.String()
                 },
                 body:
                 @"
                 Set transaction isolation level read uncommitted
                 begin transaction
-	                if exists (select Name from [Certificate] where Name=@certificateid)
-	                begin
-		                begin transaction
-				                select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,[Certificate].Name,Fee,COUNT(Register.StudentID) as SoLuongDaDangKy
-				                from Agency,Register,TestSchedule,[Certificate]
-				                where 
-				                Agency.AgencyId=TestSchedule.AgencyId and
-				                TestSchedule.CertificateId = [Certificate].Name and
-				                TestSchedule.TestScheduleId = Register.TestScheduleId and
-				                [Certificate].Name=@certificateid and
-				                TestSchedule.Date > = GETDATE()
-				                group by TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,[Certificate].Name,Fee 
-		                commit transaction
-	                end
-	                else
-	                begin
-		                begin transaction
-		                select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,[Certificate].Name,Fee,COUNT(Register.StudentID) as SoLuongDaDangKy
-				                from Agency,Register,TestSchedule,[Certificate]
-				                where 
-				                Agency.AgencyId=TestSchedule.AgencyId and
-				                TestSchedule.CertificateId = [Certificate].Name and
-				                TestSchedule.TestScheduleId = Register.TestScheduleId and
-				                TestSchedule.Date > = GETDATE()
-				                group by TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,[Certificate].Name,Fee 
-		                commit transaction
-	                end
+                    if @p0 != ''
+                    begin
+	                    select TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
+	                    from TestSchedule, Register, Agency, Certificate 
+	                    where TestSchedule.Date >=getdate() and 
+                        TestSchedule.TestScheduleId = Register.TestScheduleId and
+                        TestSchedule.AgencyId = Agency.AgencyId and
+                        TestSchedule.CertificateId = Certificate.Name and
+                        Register.StudentId = @p0
+	                    order by Date desc
+                    end
+                    else    
+                    begin
+	                    select TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
+	                    from TestSchedule, Register, Agency, Certificate 
+	                    where TestSchedule.Date >=getdate() and 
+                        TestSchedule.TestScheduleId = Register.TestScheduleId and
+                        TestSchedule.AgencyId = Agency.Name and
+                        TestSchedule.CertificateId = Certificate.Name
+	                    order by Date desc
+                    end
+                commit transaction
                 ");
-
-            //f
+            #endregion
+            #region f dbo.CheckTestScore
             CreateStoredProcedure("dbo.CheckTestScore",p=>new{
-                studentid = p.String()
+                p0 = p.String()
             },body:
             @"
             Set transaction isolation level read uncommitted
             begin transaction
-	            if exists(select * from Student where PersonalId = @studentid)
+	            if exists(select * from Student where PersonalId = @p0)
 		            begin 
-			            if exists(select * from Register where StudentId = @studentid)
+			            if exists(select * from Register where StudentId = @p0)
 			            begin
 				            select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Register.TestScore
 				            from Register,TestSchedule,Agency
-				            where Register.StudentId=@studentid and
+				            where Register.StudentId=@p0 and
 				            Register.TestScheduleId=TestSchedule.TestScheduleId and
 				            TestSchedule.AgencyId = Agency.AgencyId
 				            commit transaction
@@ -199,22 +199,22 @@
 		            return
 	            end"
             );
-
-            //g
+            #endregion
+            #region g dbo.ReportNumberStudent_Certificate
             CreateStoredProcedure("dbo.ReportNumberStudent_Certificate", p => new
             {
-                certificate = p.String()
+                p0 = p.String()
             }, body:
             @"
                 set transaction isolation level read committed
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
 	                select Name,Count(StudentId) as SoLuong
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId
-	                and Certificate.Name = @certificate and
+	                and Certificate.Name = @p0 and
 	                TestSchedule.Date >= GETDATE()
 	                Group by Name
                 end
@@ -229,26 +229,26 @@
                 end
                 commit transaction
             ");
-
-            //h
+            #endregion
+            #region h dbo.ReportNumberStudent_Certificate_Date
             CreateStoredProcedure("dbo.ReportNumberStudent_Certificate_Date", p => new
             {
-                certificate = p.String(),
-                month = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level read committed
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
 	                select Name,Count(StudentId) as SoLuong
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
-	                Certificate.Name = @certificate and
-	                DATEPART(year,Date) = @year and
-	                DATEPART(month,Date) = @month
+	                Certificate.Name = @p0 and
+	                DATEPART(year,Date) = @p2 and
+	                DATEPART(month,Date) = @p1
 	                Group by Name
                 end
                 else
@@ -257,177 +257,179 @@
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
-	                DATEPART(year,Date) = @year and
-	                DATEPART(month,Date) = @month
+	                DATEPART(year,Date) = @p2 and
+	                DATEPART(month,Date) = @p1
 	                Group by Name
                 end
                 commit transaction
             ");
-
-            //i
+            #endregion
+            #region i dbo.ReportNumberStudent_Certificate_Date_Quy
             CreateStoredProcedure("dbo.ReportNumberStudent_Certificate_Date_Quy", p => new
             {
-                certificate = p.String(),
-                quy = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level read committed
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
 		            select Name,Count(StudentId) as SoLuong
 		            from Certificate,TestSchedule,Register
 		            where Certificate.Name = TestSchedule.CertificateId and
 		            TestSchedule.TestScheduleId = Register.TestScheduleId and
-		            Certificate.Name = @certificate and
-		            DATEPART(year,Date) = @year and
-		            DATEPART(month,Date) between 3*@quy-2 and 3*@quy
+		            Certificate.Name = @p0 and
+		            DATEPART(year,Date) = @p2 and
+		            DATEPART(month,Date) between 3*@p1-2 and 3*@p1
 		            Group by Name
                 end
                 commit transaction
             ");
-
-            //j
+            #endregion
+            #region j dbo.SumFee_Certificates
             CreateStoredProcedure("dbo.SumFee_Certificates", p => new
             {
-                certificate = p.String(),
+                p0 = p.String()
             }, body:
             @"
                 set transaction isolation level Serializable
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
-	                select Certificate.Name,Sum(Fee) as DoanhThu
+	                select Certificate.Name,Sum(Fee) as TotalFee
 	                from Certificate,TestSchedule,Agency,Register
-	                where Certificate.Name=TestSchedule.CertificateId and TestSchedule.AgencyId=Agency.AgencyId and TestSchedule.TestScheduleId=Register.TestScheduleId
-	                and Certificate.Name=@certificate
+	                where Certificate.Name=TestSchedule.CertificateId and 
+                    TestSchedule.AgencyId=Agency.AgencyId and 
+                    TestSchedule.TestScheduleId=Register.TestScheduleId and
+	                Certificate.Name=@p0
 	                group by Certificate.Name
                 end
                 else
                 begin
-	                select Certificate.Name,Sum(Fee) as DoanhThu
+	                select Certificate.Name,Sum(Fee) as TotalFee
 	                from Certificate,TestSchedule,Agency,Register
-	                where Certificate.Name=TestSchedule.CertificateId and TestSchedule.AgencyId=Agency.AgencyId and TestSchedule.TestScheduleId=Register.TestScheduleId
+	                where Certificate.Name=TestSchedule.CertificateId and 
+                    TestSchedule.AgencyId=Agency.AgencyId and 
+                    TestSchedule.TestScheduleId=Register.TestScheduleId
 	                group by Certificate.Name
                 end
                 commit transaction
             ");
-
+            #endregion
+            #region k dbo.SumFee_Certificates_Date
             //k
             CreateStoredProcedure("dbo.SumFee_Certificates_Date", p => new
             {
-                certificate = p.String(),
-                month = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level Serializable
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
-	                select Certificate.Name,Sum(Fee) as DoanhThu
+	                select Certificate.Name,Sum(Fee) as TotalFee
 	                from Certificate,TestSchedule,Agency,Register
 	                where Certificate.Name=TestSchedule.CertificateId and 
 	                TestSchedule.AgencyId=Agency.AgencyId and 
 	                TestSchedule.TestScheduleId=Register.TestScheduleId and
-	                Certificate.Name = @certificate and
-	                DATEPART(year,Register.DateReg) = @year and
-	                DATEPART(month,Register.DateReg) = @month
+	                Certificate.Name = @p0 and
+	                DATEPART(year,Register.DateReg) = @p2 and
+	                DATEPART(month,Register.DateReg) = @p1
 	                group by Certificate.Name
                 end
                 else
                 begin
-	                select Certificate.Name,Sum(Fee) as DoanhThu
+	                select Certificate.Name,Sum(Fee) as TotalFee
 	                from Certificate,TestSchedule,Agency,Register
 	                where Certificate.Name=TestSchedule.CertificateId and 
 	                TestSchedule.AgencyId=Agency.AgencyId and 
 	                TestSchedule.TestScheduleId=Register.TestScheduleId and
-	                DATEPART(year,Register.DateReg) = @year and
-	                DATEPART(month,Register.DateReg) = @month
+	                DATEPART(year,Register.DateReg) = @p2 and
+	                DATEPART(month,Register.DateReg) = @p1
 	                group by Certificate.Name
                 end
                 commit transaction
             ");
-
+            #endregion
+            #region l dbo.SumFee_Certificates_Date_Quy
             //l
             CreateStoredProcedure("dbo.SumFee_Certificates_Date_Quy", p => new
             {
-                certificate = p.String(),
-                quy = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level Serializable
                 begin transaction
-                if exists (select * from Certificate where Name=@certificate)
+                if exists (select * from Certificate where Name=@p0)
                 begin
-		            select Certificate.Name,Sum(Fee) as DoanhThu
+		            select Certificate.Name,Sum(Fee) as TotalFee
 		            from Certificate,TestSchedule,Agency,Register
 		            where Certificate.Name=TestSchedule.CertificateId and 
 		            TestSchedule.AgencyId=Agency.AgencyId and 
 		            TestSchedule.TestScheduleId=Register.TestScheduleId and
-		            Certificate.Name = @certificate and
-		            DATEPART(year,Register.DateReg) = @year and
-		            DATEPART(month,Register.DateReg) between 3*@quy-2 and 3*@quy
+		            Certificate.Name = @p0 and
+		            DATEPART(year,Register.DateReg) = @p2 and
+		            DATEPART(month,Register.DateReg) between 3*@p1-2 and 3*@p1
 		            group by Certificate.Name
 	            end
                 commit transaction
             ");
-
+            #endregion
+            #region m dbo.ResultTest_Certificate
             //m
             CreateStoredProcedure("dbo.ResultTest_Certificate", p => new
             {
-                studentid = p.String(),
-                certificate = p.String()
+                p0 = p.String()
             }, body:
             @"
                 set transaction isolation level read uncommitted
                 begin transaction
 	                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 	                from Certificate,TestSchedule,Agency,Register
-	                where Certificate.Name = @certificate and
+	                where Certificate.Name = @p0 and
 	                Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.AgencyId = Agency.AgencyId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
-	                Register.StudentId = @studentid and
 	                TestSchedule.Date <= GetDate()
-	                order by  Certificate.Name,TestSchedule.Date asc
+	                order by  Certificate.Name,Register.StudentId asc
                 commit transaction
             ");
-
-            //n
+            #endregion
+            #region n dbo.ResultTest_Certificate_Date
             CreateStoredProcedure("dbo.ResultTest_Certificate_Date", p => new
             {
-                studentid = p.String(),
-                certificate = p.String(),
-                month = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level read uncommitted
                 begin transaction
 	                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 	                from Certificate,TestSchedule,Agency,Register
-	                where Certificate.Name = @certificate and
+	                where Certificate.Name = @p0 and
 	                Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.AgencyId = Agency.AgencyId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
-	                Register.StudentId = @studentid and
 	                TestSchedule.Date <= GetDate() and
-	                DATEPART(year,TestSchedule.Date) = @year and
-	                DATEPART(month,TestSchedule.Date) = @month
-	                order by  Certificate.Name,TestSchedule.Date asc
+	                DATEPART(year,TestSchedule.Date) = @p2 and
+	                DATEPART(month,TestSchedule.Date) = @p1
+	                order by  Certificate.Name,Register.StudentId asc
                 commit transaction
             ");
-
-            //o
+            #endregion
+            #region o dbo.ResultTest_Certificate_Date_Quy
             CreateStoredProcedure("dbo.ResultTest_Certificate_Date_Quy", p => new
             {
-                studentid = p.String(),
-                certificate = p.String(),
-                quy = p.Int(),
-                year = p.Int()
+                p0 = p.String(),
+                p1 = p.Int(),
+                p2 = p.Int()
             }, body:
             @"
                 set transaction isolation level read uncommitted
@@ -435,19 +437,18 @@
 	                begin
 		                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 		                from Certificate,TestSchedule,Agency,Register
-		                where Certificate.Name = @certificate and
+		                where Certificate.Name = @p0 and
 		                Certificate.Name = TestSchedule.CertificateId and
 		                TestSchedule.AgencyId = Agency.AgencyId and
 		                TestSchedule.TestScheduleId = Register.TestScheduleId and
-		                Register.StudentId = @studentid and
 		                TestSchedule.Date <= GetDate() and
-		                DATEPART(year,TestSchedule.Date) = @year and
-		                DATEPART(month,TestSchedule.Date) between 3*@quy-2 and 3*@quy
-		                order by  Certificate.Name,TestSchedule.Date asc
+		                DATEPART(year,TestSchedule.Date) = @p2 and
+		                DATEPART(month,TestSchedule.Date) between 3*@p1-2 and 3*@p1
+		                order by  Certificate.Name,Register.StudentId asc
 	                end
                 commit transaction
             ");
-             
+            #endregion
         }
 
         public void DropStores()
