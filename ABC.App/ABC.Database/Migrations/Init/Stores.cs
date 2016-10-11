@@ -210,7 +210,7 @@
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
-	                select Name,Count(StudentId) as SoLuong
+	                select Name,Count(StudentId) as Number
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId
@@ -220,7 +220,7 @@
                 end
                 else
                 begin
-	                select Name,Count(StudentId) as SoLuong
+	                select Name,Count(StudentId) as Number
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
@@ -242,7 +242,7 @@
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
-	                select Name,Count(StudentId) as SoLuong
+	                select Name,Count(StudentId) as Number
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
@@ -253,7 +253,7 @@
                 end
                 else
                 begin
-	                select Name,Count(StudentId) as SoLuong
+	                select Name,Count(StudentId) as Number
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
@@ -264,8 +264,8 @@
                 commit transaction
             ");
             #endregion
-            #region i dbo.ReportNumberStudent_Certificate_Date_Quy
-            CreateStoredProcedure("dbo.ReportNumberStudent_Certificate_Date_Quy", p => new
+            #region i dbo.ReportNumberStudent_Certificate_Date_Quarter
+            CreateStoredProcedure("dbo.ReportNumberStudent_Certificate_Date_Quarter", p => new
             {
                 p0 = p.String(),
                 p1 = p.Int(),
@@ -276,7 +276,7 @@
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
-		            select Name,Count(StudentId) as SoLuong
+		            select Name,Count(StudentId) as Number
 		            from Certificate,TestSchedule,Register
 		            where Certificate.Name = TestSchedule.CertificateId and
 		            TestSchedule.TestScheduleId = Register.TestScheduleId and
@@ -355,9 +355,9 @@
                 commit transaction
             ");
             #endregion
-            #region l dbo.SumFee_Certificates_Date_Quy
+            #region l dbo.SumFee_Certificates_Date_Quarter
             //l
-            CreateStoredProcedure("dbo.SumFee_Certificates_Date_Quy", p => new
+            CreateStoredProcedure("dbo.SumFee_Certificates_Date_Quarter", p => new
             {
                 p0 = p.String(),
                 p1 = p.Int(),
@@ -424,8 +424,8 @@
                 commit transaction
             ");
             #endregion
-            #region o dbo.ResultTest_Certificate_Date_Quy
-            CreateStoredProcedure("dbo.ResultTest_Certificate_Date_Quy", p => new
+            #region o dbo.ResultTest_Certificate_Date_Quarter
+            CreateStoredProcedure("dbo.ResultTest_Certificate_Date_Quarter", p => new
             {
                 p0 = p.String(),
                 p1 = p.Int(),

@@ -58,7 +58,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date", CommandType.StoredProcedure, which.Name).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date", CommandType.StoredProcedure, which.Name,month,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -69,7 +69,7 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
-        public DataTable ReportNumberStudent_Certificate_Date_Quy(Certificate which, int quy, int year)
+        public DataTable ReportNumberStudent_Certificate_Date_Quy(Certificate which, int quarter, int year)
         {
             //Name,Count(StudentId) as SoLuong
             var table = DataTableHelper.CreateCustomTable(
@@ -81,7 +81,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date_Quy", CommandType.StoredProcedure, which.Name).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date_Quy", CommandType.StoredProcedure, which.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -139,7 +139,7 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
-        public DataTable SumFee_Certificates_Date_Quy(Certificate certificate, int quy, int year)
+        public DataTable SumFee_Certificates_Date_Quy(Certificate certificate, int quarter, int year)
         {
             //Certificate.Name,Sum(Fee) as TotalFee
             var table = DataTableHelper.CreateCustomTable(
@@ -151,7 +151,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.SumFee_Certificates_Date_Quy", CommandType.StoredProcedure, certificate.Name,quy,year).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.SumFee_Certificates_Date_Quy", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -213,7 +213,7 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
-        public DataTable ResultTest_Certificate_Date_Quy(Certificate certificate, int quy, int year)
+        public DataTable ResultTest_Certificate_Date_Quy(Certificate certificate, int quarter, int year)
         {
             //Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
             var table = DataTableHelper.CreateCustomTable(
@@ -227,7 +227,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate_Date_Quy", CommandType.StoredProcedure, certificate.Name,quy,year).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate_Date_Quy", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
