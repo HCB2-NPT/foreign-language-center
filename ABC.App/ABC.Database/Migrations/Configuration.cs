@@ -18,27 +18,17 @@ namespace ABC.Database.Migrations
 
         protected override void Seed(ABC.Database.ObjectContexts.MyDatabaseContext context)
         {
-           
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
             
             //create primary tables
             this.seedingAgency(context);
             context.SaveChanges();
+
             this.seedingCertificate(context);
             context.SaveChanges();
+
             this.seedingStudent(context);
             context.SaveChanges();
+
             this.seedingTestSchedule(context);
             context.SaveChanges();
 
@@ -46,6 +36,9 @@ namespace ABC.Database.Migrations
             this.seedingRegister(context);
             context.SaveChanges();
 
+            // seeding Mock Object
+            this.seedingMockObject(context);
+            context.SaveChanges();
         }
 
         private void seedingAgency(MyDatabaseContext context)
@@ -159,21 +152,6 @@ namespace ABC.Database.Migrations
                         CertificateId = certificates[rand.Next(certificates.Length)]
                     }
                 );
-
-                //for (int sub_index = 0; sub_index < numberOfStudents; sub_index++)
-                //{
-                //    context.Registers.AddOrUpdate(
-                //        r => r.Id,
-                //        new Register
-                //        {
-                //            //RegisterId = String.Format("{0}{1}", (index + 1).ToString("0000"), (sub_index + 1).ToString("0000")),
-                //            StudentId = "0250000" + rand.Next(1, 200).ToString("000"),
-                //            TestScheduleId = index + 1,
-                //            DateReg = new DateTime(2016, month, day - rand.Next(3, 4), rand.Next(8, 17), rand.Next(59), rand.Next(59)),
-                //            TestScore = rand.Next(30, 100)
-                //        }
-                //    );
-                //}
             }
         }
 
@@ -190,7 +168,6 @@ namespace ABC.Database.Migrations
                     r => r.Id,
                     new Register
                     {
-                        //RegisterId = String.Format("{0}{1}", (index + 1).ToString("00"), (sub_index + 1).ToString("00")),
                         StudentId = st.PersonalId,
                         TestScheduleId = schedule.TestScheduleId,
                         DateReg = new DateTime(2016, datereg.Month, datereg.Day, rand.Next(8, 17), rand.Next(59), rand.Next(59)),
@@ -198,6 +175,20 @@ namespace ABC.Database.Migrations
                     }
                 );
             }
+        }
+
+        private void seedingMockObject(MyDatabaseContext context)
+        {
+            context.TestSchedules.AddOrUpdate(
+                t => t.TestScheduleId,
+                new TestSchedule
+                {
+                    TestScheduleId = "TS00101",
+                    Date = new DateTime(2016, 10, 20, 8, 0, 0),
+                    AgencyId = "AG00001",
+                    CertificateId = "TOEFL"
+                }
+            );
         }
     }
 }

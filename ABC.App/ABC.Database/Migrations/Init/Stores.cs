@@ -449,6 +449,23 @@
                 commit transaction
             ");
             #endregion
+
+            #region Helper dbo.getTestSchedules
+            CreateStoredProcedure("dbo.usp_getTestSchedules",
+            body:
+            @"
+                SET TRANSACTION ISOLATION LEVEL READ COMMITTED
+                BEGIN
+                    SELECT TestSchedule.TestScheduleId, TestSchedule.CertificateId, CONVERT(VARCHAR(10), TestSchedule.Date, 103) + ' '  + convert(VARCHAR(8), TestSchedule.Date, 14), Agency.Name, Certificate.Name, Certificate.Fee
+                    FROM TestSchedule, Agency, Certificate 
+                    WHERE TestSchedule.Date >= GETDATE()
+                        AND TestSchedule.AgencyId = Agency.AgencyId
+                        AND TestSchedule.CertificateId = Certificate.Name
+                        AND TestSchedule.Date <= DATEADD(DAY, 90, GETDATE())
+                    ORDER BY TestSchedule.Date DESC
+                END
+            ");
+            #endregion
         }
 
         public void DropStores()

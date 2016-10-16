@@ -37,10 +37,10 @@
 
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Mã" Width="80" Binding="{Binding TestScheduleId}"/>
-					<DataGridTextColumn Header="Văn phòng đại diện" Width="350" SortDirection="Ascending" Binding="{Binding Agency.Name}" />
-					<DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding Certificate.Name}" />
+					<DataGridTextColumn Header="Văn phòng đại diện" Width="350" SortDirection="Ascending" Binding="{Binding AgencyName}" />
+					<DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding CertificateName}" />
 					<DataGridTextColumn Header="Thời gian" Width="*" Binding="{Binding Date}" />
-					<DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Certificate.Fee}" />
+					<DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Fee}" />
 
 					<DataGridTemplateColumn Width="150">
 						<DataGridTemplateColumn.CellTemplate>

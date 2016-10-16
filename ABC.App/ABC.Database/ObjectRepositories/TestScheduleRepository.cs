@@ -124,5 +124,33 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
+        public DataTable getTestSchedules()
+        {
+            var table = DataTableHelper.CreateCustomTable(
+                new CustomColumn("TestScheduleId", typeof(string)),
+                new CustomColumn("CertificateId", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("Fee", typeof(double))
+                );
+            using (var context = new MyDatabaseContext())
+            {
+                using (var connection = context.Database.Connection)
+                {
+                    connection.Open();
+                    using (var reader = DbMyCommand.CreateCmd(
+                        context, "dbo.usp_getTestSchedules",
+                        CommandType.StoredProcedure
+                    ).ExecuteReader())
+                    {
+                        DataTableHelper.ReadFromDataReader(reader, ref table);
+                    }
+                    connection.Close();
+                }
+            }
+            NotifyPropertyChanged("All");
+            return table;
+        }
     }
 }
