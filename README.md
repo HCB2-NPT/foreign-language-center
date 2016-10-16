@@ -17,7 +17,7 @@ Registration certificate of foreign language exem such as TOEIC, TOEFL, TFL, JPT
 5. Create **App.config** in folder **ABC.App** and change ConnectionString. Content in [Wiki](https://github.com/HCB2-NPT/foreign-language-center/wiki/App.config).
 6. Create **App.config** in folder **ABC.Database** and change ConnectionString. Content in [Wiki](https://github.com/HCB2-NPT/foreign-language-center/wiki/App.config).
 5. Type below commands
-<code></code><code>PowerShell
+```PowerShell
 clear
 
 enable-migrations -ContextProjectName ABC.Database -StartupProjectName ABC.Database -ContextTypeName ABC.Database.ObjectContexts.MyDatabaseContext -ProjectName ABC.Database -Force
@@ -25,18 +25,18 @@ enable-migrations -ContextProjectName ABC.Database -StartupProjectName ABC.Datab
 add-migration InitialCreation
 
 update-database -Verbose
-</code><code></code>
+```
 
 ## Development
 1. Ensure you created 2 **App.config** files.
 2. Open **Package Manager Console**.
 3. Type below commands
-<code></code><code>PowerShell
+```PowerShell
 clear
 
 update-database -verbose
 
 update-database
-</code><code></code>
+```
 
-## DO NOT CHANGE CONTENT OF THESE FILES IN ABC.DATABASE: Objects, ObjectContexts, Migrations
+#### DO NOT CHANGE CONTENT OF THESE FILES IN ABC.DATABASE: Objects, ObjectContexts, Migrations
