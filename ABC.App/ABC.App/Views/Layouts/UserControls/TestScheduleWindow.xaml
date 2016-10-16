@@ -8,48 +8,49 @@
     <DockPanel Background="WhiteSmoke" LastChildFill="True">
         <Label Style="{DynamicResource LabelTitleWindow}" Content="TRA CỨU LỊCH THI" DockPanel.Dock="Top"/>
 
-        <!--<ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">-->
-        <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}">
-            <DataGrid.Resources>
-                <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="White" />
-                    <Setter Property="Height" Value="32" />
-                    <Setter Property="FontSize" Value="18" />
-                    <Setter Property="Padding" Value="8,4" />
-                    <Setter Property="FontWeight" Value="SemiBold" />
-                </Style>
-            </DataGrid.Resources>
+        <StackPanel Style="{DynamicResource TableContainer}">
+			<DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}">
+				<DataGrid.Resources>
+					<Style TargetType="{x:Type DataGridColumnHeader}">
+						<Setter Property="Background" Value="White" />
+						<Setter Property="Height" Value="32" />
+						<Setter Property="FontSize" Value="18" />
+						<Setter Property="Padding" Value="8,4" />
+						<Setter Property="FontWeight" Value="SemiBold" />
+					</Style>
+				</DataGrid.Resources>
 
-            <DataGrid.CellStyle>
-                <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="Padding" Value="8"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                    <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </DataGrid.CellStyle>
+				<DataGrid.CellStyle>
+					<Style TargetType="{x:Type DataGridCell}">
+						<Setter Property="Padding" Value="8"/>
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="{x:Type DataGridCell}">
+									<Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+										<ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+									</Border>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</DataGrid.CellStyle>
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Mã" Width="80" Binding="{Binding TestScheduleId}"/>
-                <DataGridTextColumn Header="Văn phòng đại diện" Width="250" SortDirection="Ascending" Binding="{Binding Agency.Name}" />
-                <DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding Certificate.Name}" />
-                <DataGridTextColumn Header="Thời gian" Width="*" Binding="{Binding Date}" />
-                <DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Certificate.Fee}" />
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Mã" Width="80" Binding="{Binding TestScheduleId}"/>
+					<DataGridTextColumn Header="Văn phòng đại diện" Width="350" SortDirection="Ascending" Binding="{Binding Agency.Name}" />
+					<DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding Certificate.Name}" />
+					<DataGridTextColumn Header="Thời gian" Width="*" Binding="{Binding Date}" />
+					<DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Certificate.Fee}" />
 
-                <DataGridTemplateColumn Width="150">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Style="{DynamicResource ButtonDataGrid}" Content="Đăng ký"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+					<DataGridTemplateColumn Width="150">
+						<DataGridTemplateColumn.CellTemplate>
+							<DataTemplate>
+								<Button Style="{DynamicResource ButtonDataGrid}" Content="Đăng ký"/>
+							</DataTemplate>
+						</DataGridTemplateColumn.CellTemplate>
+					</DataGridTemplateColumn>
+				</DataGrid.Columns>
+			</DataGrid>
+		</StackPanel>
     </DockPanel>
 </UserControl>
