@@ -1,8 +1,11 @@
-﻿using ABC.Database.ObjectContexts;
+﻿using ABC.Database.Helpers;
+using ABC.Database.ObjectContexts;
 using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,5 +45,84 @@ namespace ABC.Database.ObjectRepositories
             }
             NotifyPropertyChanged("All");
         }
+
+        public DataTable ListTested(Student which)
+        {
+            //TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Certificate.Name,Fee
+            var table = DataTableHelper.CreateCustomTable(
+                new CustomColumn("TestScheduleId", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
+                new CustomColumn("Name", typeof(string)),
+                new CustomColumn("Name", typeof(string)),
+                new CustomColumn("Fee", typeof(double))
+                );
+            using (var context = new MyDatabaseContext())
+            {
+                using (var con = context.Database.Connection)
+                {
+                    con.Open();
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ListTested", CommandType.StoredProcedure,which.PersonalId).ExecuteReader())
+                    {
+                        DataTableHelper.ReadFromDataReader(reader, ref table);
+                    }
+                    con.Close();
+                }
+            }
+            NotifyPropertyChanged("All");
+            return table;
+        }
+
+        public DataTable CheckListTestSchedule(Student which)
+        {
+            //TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
+            var table = DataTableHelper.CreateCustomTable(
+                new CustomColumn("CertificateId", typeof(string)),
+                new CustomColumn("Date", typeof(DateTime)),
+                new CustomColumn("NameAgency", typeof(string)),
+                new CustomColumn("NameCertificate", typeof(string)),
+                new CustomColumn("Fee", typeof(double))
+                );
+            using (var context = new MyDatabaseContext())
+            {
+                using (var con = context.Database.Connection)
+                {
+                    con.Open();
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckListTestSchedule", CommandType.StoredProcedure,
+                        which.PersonalId).ExecuteReader())
+                    {
+                        DataTableHelper.ReadFromDataReader(reader, ref table);
+                    }
+                    con.Close();
+                }
+            }
+            NotifyPropertyChanged("All");
+            return table;
+        }
+
+        public DataTable CheckTestScore(Student which)
+        {
+            //TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Register.TestScore
+            var table = DataTableHelper.CreateCustomTable(
+                new CustomColumn("TestScheduleId", typeof(string)),
+                new CustomColumn("Date", typeof(DateTime)),
+                new CustomColumn("Name", typeof(string)),
+                new CustomColumn("TestScore", typeof(double))
+                );
+            using (var context = new MyDatabaseContext())
+            {
+                using (var con = context.Database.Connection)
+                {
+                    con.Open();
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckTestScore", CommandType.StoredProcedure, which.PersonalId).ExecuteReader())
+                    {
+                        DataTableHelper.ReadFromDataReader(reader, ref table);
+                    }
+                    con.Close();
+                }
+            }
+            NotifyPropertyChanged("All");
+            return table;
+        }
+
     }
 }

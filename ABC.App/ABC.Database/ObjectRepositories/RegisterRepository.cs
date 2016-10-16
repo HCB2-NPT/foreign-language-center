@@ -3,17 +3,14 @@ using ABC.Database.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Data.Common;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using ABC.Database.Helpers;
+using System.Threading.Tasks;
 
 namespace ABC.Database.ObjectRepositories
 {
-    public class StudentRepository : INotifyPropertyChanged
+    public class RegisterRepository
     {
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,25 +20,20 @@ namespace ABC.Database.ObjectRepositories
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-        public List<Student> All
-        {
-            get
-            {
-                var list = new List<Student>();
-                using (var context = new MyDatabaseContext())
-                {
-                    list = context.Students.ToList();
-                }
-                return list;
-            }
-        }
-
-        public void Add(Student which)
+        public void Add(Student st,TestSchedule ts)
         {
             using (var context = new MyDatabaseContext())
             {
-                context.Database.ExecuteSqlCommand("exec dbo.AddStudent @id, @fn, @bd, @pn", which.PersonalId,which.FullName,which.Birthday,which.PhoneNumber);
+                context.Database.ExecuteSqlCommand("exec dbo.AddRegister @studentid,@testscheduleid", st.PersonalId,ts.TestScheduleId);
+            }
+            NotifyPropertyChanged("All");
+        }
+
+        public void AddOnline(Student st, TestSchedule ts)
+        {
+            using (var context = new MyDatabaseContext())
+            {
+                context.Database.ExecuteSqlCommand("exec dbo.RegisterTestOnline @studentid,@testscheduleid", st.PersonalId,ts.TestScheduleId);
             }
             NotifyPropertyChanged("All");
         }

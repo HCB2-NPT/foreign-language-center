@@ -26,7 +26,9 @@ namespace ABC.App.Views.Layouts.UserControls
         public TestScheduleWindow()
         {
             InitializeComponent();
-            this.DataContext = new TestScheduleRepository().All;
+            Student st = new Student();
+            st.PersonalId="0250000001";
+            this.DataContext = new TestScheduleRepository().CheckListTestSchedule(st);
         }
     }
 }
