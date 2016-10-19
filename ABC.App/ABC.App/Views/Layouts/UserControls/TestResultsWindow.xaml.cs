@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ABC.Database.ObjectRepositories;
+using ABC.Database.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,24 @@ namespace ABC.App.Views.Layouts.UserControls
         public TestResultsWindow()
         {
             InitializeComponent();
+            Agencies.ItemsSource = new AgencyRepository().All;
+            Certificates.ItemsSource = new CertificateRepository().All;
+        }
+
+        private void getResults(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.DataContext = new TestScheduleRepository().CheckTestScore(
+                Agencies.SelectedValue.ToString(), 
+                Certificates.SelectedValue.ToString(), 
+                PersonalID.Text, 
+                TestScheduleDate.SelectedDate.Value.Date.ToShortDateString());
+        }
+
+        private void clearResults(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.DataContext = null;
+            TestScheduleDate.SelectedDate = DateTime.Today;
+            PersonalID.Clear();
         }
     }
 }

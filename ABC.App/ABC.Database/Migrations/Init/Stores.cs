@@ -168,36 +168,35 @@
                 commit transaction
                 ");
             #endregion
+
             #region f dbo.CheckTestScore
             CreateStoredProcedure("dbo.CheckTestScore",p=>new{
-                p0 = p.String()
+                p0 = p.String(),
+                p1 = p.String(),
+                p2 = p.String(),
+                p3 = p.String()
             },body:
             @"
             Set transaction isolation level read uncommitted
             begin transaction
-	            if exists(select * from Student where PersonalId = @p0)
-		            begin 
-			            if exists(select * from Register where StudentId = @p0)
-			            begin
-				            select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Register.TestScore
-				            from Register,TestSchedule,Agency
-				            where Register.StudentId=@p0 and
-				            Register.TestScheduleId=TestSchedule.TestScheduleId and
-				            TestSchedule.AgencyId = Agency.AgencyId
-				            commit transaction
-				            return
-			            end
-			            else
-			            begin
-				            rollback
-				            return
-			            end
-		            end
-	            else
-	            begin
-		            rollback
-		            return
-	            end"
+	            if exists(select StudentId from Register where StudentId = @p0)
+		        begin
+			        select TestSchedule.TestScheduleId, TestSchedule.Date, Agency.Name, Register.TestScore
+			        from Register, TestSchedule, Agency
+			        where Register.StudentId = @p0
+				        AND TestSchedule.AgencyId = @p1
+				        AND TestSchedule.CertificateId = @p2
+				        AND TestSchedule.Date >= @p3 AND TestSchedule.Date < DATEADD(DAY, 1, @p3)
+				        AND Register.TestScheduleId = TestSchedule.TestScheduleId
+				        AND TestSchedule.AgencyId = Agency.AgencyId
+			        commit transaction
+			        return
+		        end
+		        else
+		        begin
+			        rollback
+			        return
+		        end"
             );
             #endregion
             #region g dbo.ReportNumberStudent_Certificate

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Style x:Key="SimpleTable" TargetType="{x:Type DataGrid}">
-        <Setter Property="Height" Value="480" />
+        <Setter Property="MinHeight" Value="400" />
         <Setter Property="GridLinesVisibility" Value="All" />
         <Setter Property="Background" Value="White" />
         <Setter Property="FontFamily" Value="Helvetica" />

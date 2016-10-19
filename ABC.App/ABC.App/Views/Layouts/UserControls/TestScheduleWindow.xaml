@@ -9,7 +9,7 @@
         <Label Style="{DynamicResource LabelTitleWindow}" Content="TRA CỨU LỊCH THI" DockPanel.Dock="Top"/>
 
         <StackPanel Style="{DynamicResource TableContainer}">
-			<DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}">
+			<DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}" Height="500">
 				<DataGrid.Resources>
 					<Style TargetType="{x:Type DataGridColumnHeader}">
 						<Setter Property="Background" Value="White" />

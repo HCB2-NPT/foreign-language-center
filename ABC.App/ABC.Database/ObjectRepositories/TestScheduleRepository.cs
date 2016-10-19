@@ -99,21 +99,22 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
-        public DataTable CheckTestScore(Student which)
+        public DataTable CheckTestScore(string agency, string certificate, string personalID, string dateRegister)
         {
             //TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Register.TestScore
             var table = DataTableHelper.CreateCustomTable(
                 new CustomColumn("TestScheduleId", typeof(string)),
                 new CustomColumn("Date", typeof(DateTime)),
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("TestScore", typeof(double))
+                new CustomColumn("Agency", typeof(string)),
+                new CustomColumn("TestScore", typeof(double)),
+                new CustomColumn("Certificate", typeof(string))
                 );
             using (var context = new MyDatabaseContext())
             {
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckTestScore", CommandType.StoredProcedure, which.PersonalId).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckTestScore", CommandType.StoredProcedure, personalID, agency, certificate, dateRegister).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }

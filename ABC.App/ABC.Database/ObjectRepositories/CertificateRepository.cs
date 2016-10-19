@@ -23,6 +23,19 @@ namespace ABC.Database.ObjectRepositories
         }
         #endregion
 
+        public List<Certificate> All
+        {
+            get
+            {
+                var list = new List<Certificate>();
+                using (var context = new MyDatabaseContext())
+                {
+                    list = context.Certificates.ToList();
+                }
+                return list;
+            }
+        }
+
         public DataTable ReportNumberStudent_Certificate(Certificate which)
         {
             //Name,Count(StudentId) as SoLuong
