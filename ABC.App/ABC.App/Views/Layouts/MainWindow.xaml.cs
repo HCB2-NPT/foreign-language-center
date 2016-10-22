@@ -45,6 +45,8 @@ namespace ABC.App
             def.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
             def.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
             MainContent.Children.Add(def);
+
+            
         }
 
         private void clickTestSchedules(object sender, RoutedEventArgs e)
@@ -64,5 +66,12 @@ namespace ABC.App
             MainContent.Children.Clear();
             MainContent.Children.Add(new TestRegisterWindow());
         }
+
+        private void ThemHocVien_Click(object sender, RoutedEventArgs e)
+        {
+            Window1 w1 = new Window1();
+            w1.ShowDialog();
+        }
+
     }
 }

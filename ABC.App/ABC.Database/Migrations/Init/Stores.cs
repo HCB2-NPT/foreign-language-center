@@ -18,23 +18,25 @@
                 },
                 body:
             @" BEGIN
-	                SET TRANSACTION ISOLATION LEVEL read committed  
+                SET TRANSACTION ISOLATION LEVEL read committed  
                     begin transaction
                     if not exists (select PersonalID From Student where PersonalID = @p0)
                     begin
-                    if @p2 <= GetDate()
-                    begin
-		                begin try
-			                Insert into Student values (@p0,@p1,@p2,@p3)
-			                commit transaction
-			                return
-		                end try
-		                begin catch
-			                rollback
-			                return
-		                end catch
+		                if @p2 <= GetDate()
+		                begin
+    		                begin try
+    			                Insert into Student values (@p0,@p1,@p2,@p3)
+    			                commit
+    			                return
+    		                end try
+    		                begin catch
+    			                rollback
+				                return
+    		                end catch
+		                end
                     end
-                    end
+	                commit
+	                return
                 END"
             );
             #endregion
@@ -78,7 +80,7 @@
                 begin transaction
 	                if exists (select * from Student where PersonalId=@p0)
 	                begin
-				        select TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Certificate.Name,Fee
+				        select TestSchedule.TestScheduleId, TestSchedule.CertificateId, CONVERT(VARCHAR(10), TestSchedule.Date, 103) + ' '  + convert(VARCHAR(8), TestSchedule.Date, 14), Agency.Name, Certificate.Name, Certificate.Fee
 				        from Agency,Register,TestSchedule,Certificate
 				        where 
 				        Agency.AgencyId=TestSchedule.AgencyId and
@@ -102,13 +104,13 @@
                 begin transaction
 	                begin 
 		                declare @datereg datetime
-		                select @datereg=Date from TestSchedule where TestSchedule.TestScheduleId = @p1
-		                declare @dt datetime
-		                select @dt=Max(TestSchedule.Date)
-		                from TestSchedule,Register
-		                where TestSchedule.TestScheduleId = Register.TestScheduleId and StudentId = @p0
-
-		                if ((DATEDIFF(HOUR,@dt,@datereg)/24) < 5 and (DATEDIFF(HOUR,@dt,@datereg)/24) > -5) or Getdate()>@datereg
+                        select @datereg=Date from TestSchedule where TestSchedule.TestScheduleId = @p1
+                        if exists(select Date
+                                    from TestSchedule ,Register
+                                    where DATEDIFF(HOUR,@datereg,Date) between -120 and 120
+                                    and Register.TestScheduleId = TestSchedule.TestScheduleId
+                                    and Register.StudentId = @p0
+                                    )
 		                begin
 			                rollback
 			                return
@@ -122,14 +124,21 @@
 			                group by TestSchedule.TestScheduleId
 			
 			                if @temp < 16
-			                begin try
-				                Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,@datereg)
-				                commit transaction
-			                end try
-			                begin catch
-				                rollback
-				                return
-			                end catch
+                            begin
+			                    begin try
+				                    Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,getdate())
+				                    commit transaction
+			                    end try
+			                    begin catch
+				                    rollback
+				                    return
+			                    end catch
+                            end
+                            else
+                            begin
+                                rollback
+                                return
+                            end
 		                end
 	                end
                 ");
@@ -140,13 +149,13 @@
                 {
                     p0 = p.String()
                 },
-                body:
+                body://SELECT TestSchedule.TestScheduleId, TestSchedule.CertificateId, CONVERT(VARCHAR(10), TestSchedule.Date, 103) + ' '  + convert(VARCHAR(8), TestSchedule.Date, 14), Agency.Name, Certificate.Name, Certificate.Fee
                 @"
                 Set transaction isolation level read uncommitted
                 begin transaction
                     if @p0 != ''
                     begin
-	                    select TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
+	                    select TestSchedule.TestScheduleId, TestSchedule.CertificateId, CONVERT(VARCHAR(10), TestSchedule.Date, 103) + ' '  + convert(VARCHAR(8), TestSchedule.Date, 14), Agency.Name, Certificate.Name, Certificate.Fee
 	                    from TestSchedule, Register, Agency, Certificate 
 	                    where TestSchedule.Date >=getdate() and 
                         TestSchedule.TestScheduleId = Register.TestScheduleId and
@@ -154,39 +163,25 @@
                         TestSchedule.CertificateId = Certificate.Name and
                         Register.StudentId = @p0
 	                    order by Date desc
+                        commit transaction
+                        return
                     end
-                    else    
-                    begin
-	                    select TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
-	                    from TestSchedule, Register, Agency, Certificate 
-	                    where TestSchedule.Date >=getdate() and 
-                        TestSchedule.TestScheduleId = Register.TestScheduleId and
-                        TestSchedule.AgencyId = Agency.Name and
-                        TestSchedule.CertificateId = Certificate.Name
-	                    order by Date desc
-                    end
-                commit transaction
+                rollback
                 ");
             #endregion
-
             #region f dbo.CheckTestScore
             CreateStoredProcedure("dbo.CheckTestScore",p=>new{
-                p0 = p.String(),
-                p1 = p.String(),
-                p2 = p.String(),
-                p3 = p.String()
+                p0 = p.String()
             },body:
             @"
             Set transaction isolation level read uncommitted
             begin transaction
 	            if exists(select StudentId from Register where StudentId = @p0)
 		        begin
-			        select TestSchedule.TestScheduleId, TestSchedule.Date, Agency.Name, Register.TestScore
+			        select TestSchedule.TestScheduleId,TestSchedule.CertificateId, TestSchedule.Date, Agency.Name, Register.TestScore
 			        from Register, TestSchedule, Agency
 			        where Register.StudentId = @p0
-				        AND TestSchedule.AgencyId = @p1
-				        AND TestSchedule.CertificateId = @p2
-				        AND TestSchedule.Date >= @p3 AND TestSchedule.Date < DATEADD(DAY, 1, @p3)
+				        AND getdate() > TestSchedule.Date
 				        AND Register.TestScheduleId = TestSchedule.TestScheduleId
 				        AND TestSchedule.AgencyId = Agency.AgencyId
 			        commit transaction
@@ -213,8 +208,7 @@
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId
-	                and Certificate.Name = @p0 and
-	                TestSchedule.Date >= GETDATE()
+	                and Certificate.Name = @p0
 	                Group by Name
                 end
                 else
@@ -222,8 +216,7 @@
 	                select Name,Count(StudentId) as Number
 	                from Certificate,TestSchedule,Register
 	                where Certificate.Name = TestSchedule.CertificateId and
-	                TestSchedule.TestScheduleId = Register.TestScheduleId and
-	                TestSchedule.Date >= GETDATE()
+	                TestSchedule.TestScheduleId = Register.TestScheduleId
 	                Group by Name
                 end
                 commit transaction
@@ -384,19 +377,18 @@
             //m
             CreateStoredProcedure("dbo.ResultTest_Certificate", p => new
             {
-                p0 = p.String()
             }, body:
             @"
                 set transaction isolation level read uncommitted
                 begin transaction
-	                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
+	                select Register.StudentId,Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 	                from Certificate,TestSchedule,Agency,Register
-	                where Certificate.Name = @p0 and
+	                where
 	                Certificate.Name = TestSchedule.CertificateId and
 	                TestSchedule.AgencyId = Agency.AgencyId and
 	                TestSchedule.TestScheduleId = Register.TestScheduleId and
 	                TestSchedule.Date <= GetDate()
-	                order by  Certificate.Name,Register.StudentId asc
+	                order by TestScore asc
                 commit transaction
             ");
             #endregion
@@ -410,7 +402,7 @@
             @"
                 set transaction isolation level read uncommitted
                 begin transaction
-	                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
+	                select Register.StudentId,Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 	                from Certificate,TestSchedule,Agency,Register
 	                where Certificate.Name = @p0 and
 	                Certificate.Name = TestSchedule.CertificateId and
@@ -419,7 +411,7 @@
 	                TestSchedule.Date <= GetDate() and
 	                DATEPART(year,TestSchedule.Date) = @p2 and
 	                DATEPART(month,TestSchedule.Date) = @p1
-	                order by  Certificate.Name,Register.StudentId asc
+	                order by TestScore asc
                 commit transaction
             ");
             #endregion
@@ -434,7 +426,7 @@
                 set transaction isolation level read uncommitted
                 begin transaction
 	                begin
-		                select Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
+		                select Register.StudentId,Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
 		                from Certificate,TestSchedule,Agency,Register
 		                where Certificate.Name = @p0 and
 		                Certificate.Name = TestSchedule.CertificateId and
@@ -443,7 +435,7 @@
 		                TestSchedule.Date <= GetDate() and
 		                DATEPART(year,TestSchedule.Date) = @p2 and
 		                DATEPART(month,TestSchedule.Date) between 3*@p1-2 and 3*@p1
-		                order by  Certificate.Name,Register.StudentId asc
+		                order by TestScore asc
 	                end
                 commit transaction
             ");

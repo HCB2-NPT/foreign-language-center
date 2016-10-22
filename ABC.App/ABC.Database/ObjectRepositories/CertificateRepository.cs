@@ -40,8 +40,8 @@ namespace ABC.Database.ObjectRepositories
         {
             //Name,Count(StudentId) as SoLuong
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("SoLuong", typeof(int))
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("Number", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
             {
@@ -63,8 +63,8 @@ namespace ABC.Database.ObjectRepositories
         {
             //Name,Count(StudentId) as SoLuong
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("SoLuong", typeof(int))
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("Number", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
             {
@@ -86,15 +86,15 @@ namespace ABC.Database.ObjectRepositories
         {
             //Name,Count(StudentId) as SoLuong
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("SoLuong", typeof(int))
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("Number", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
             {
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date_Quy", CommandType.StoredProcedure, which.Name,quarter,year).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ReportNumberStudent_Certificate_Date_Quarter", CommandType.StoredProcedure, which.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -164,7 +164,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.SumFee_Certificates_Date_Quy", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.SumFee_Certificates_Date_Quarter", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -178,11 +178,14 @@ namespace ABC.Database.ObjectRepositories
         //
         public DataTable ResultTest_Certificate(Certificate certificate)
         {
-            //Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
+            //select Register.StudentId,Certificate.Name,TestSchedule.Date,Agency.Name,TestScore 
+
+
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Date", typeof(DateTime)),
+                new CustomColumn("StudentId", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
                 new CustomColumn("TestScore", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
@@ -190,7 +193,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate", CommandType.StoredProcedure, certificate.Name).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate", CommandType.StoredProcedure).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }
@@ -205,9 +208,10 @@ namespace ABC.Database.ObjectRepositories
         {
             //Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Date", typeof(DateTime)),
+                new CustomColumn("StudentId", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
                 new CustomColumn("TestScore", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
@@ -230,9 +234,10 @@ namespace ABC.Database.ObjectRepositories
         {
             //Certificate.Name,Agency.Name,TestSchedule.Date,TestScore 
             var table = DataTableHelper.CreateCustomTable(
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Date", typeof(DateTime)),
+                new CustomColumn("StudentId", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
                 new CustomColumn("TestScore", typeof(int))
                 );
             using (var context = new MyDatabaseContext())
@@ -240,7 +245,7 @@ namespace ABC.Database.ObjectRepositories
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate_Date_Quy", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.ResultTest_Certificate_Date_Quarter", CommandType.StoredProcedure, certificate.Name,quarter,year).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }

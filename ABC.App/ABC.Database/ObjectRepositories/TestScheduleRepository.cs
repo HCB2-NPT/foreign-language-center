@@ -51,9 +51,10 @@ namespace ABC.Database.ObjectRepositories
             //TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Certificate.Name,Fee
             var table = DataTableHelper.CreateCustomTable(
                 new CustomColumn("TestScheduleId", typeof(string)),
+                new CustomColumn("CertificateId", typeof(string)),
                 new CustomColumn("Date", typeof(string)),
-                new CustomColumn("Name", typeof(string)),
-                new CustomColumn("Name", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
                 new CustomColumn("Fee", typeof(double))
                 );
             using (var context = new MyDatabaseContext())
@@ -76,10 +77,11 @@ namespace ABC.Database.ObjectRepositories
         {
             //TestSchedule.CertificateId,TestSchedule.Date,Agency.Name,Certificate.Name,Certificate.Fee
             var table = DataTableHelper.CreateCustomTable(
+                new CustomColumn("TestScheduleId", typeof(string)),
                 new CustomColumn("CertificateId", typeof(string)),
-                new CustomColumn("Date", typeof(DateTime)),
-                new CustomColumn("NameAgency", typeof(string)),
-                new CustomColumn("NameCertificate", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("CertificateName", typeof(string)),
                 new CustomColumn("Fee", typeof(double))
                 );
             using (var context = new MyDatabaseContext())
@@ -99,22 +101,27 @@ namespace ABC.Database.ObjectRepositories
             return table;
         }
 
-        public DataTable CheckTestScore(string agency, string certificate, string personalID, string dateRegister)
+        public DataTable CheckTestScore(Student st)
         {
             //TestSchedule.TestScheduleId,TestSchedule.Date,Agency.Name,Register.TestScore
             var table = DataTableHelper.CreateCustomTable(
+                //new CustomColumn("TestScheduleId", typeof(string)),
+                //new CustomColumn("Date", typeof(DateTime)),
+                //new CustomColumn("Agency", typeof(string)),
+                //new CustomColumn("TestScore", typeof(double)),
+                //new CustomColumn("Certificate", typeof(string))
                 new CustomColumn("TestScheduleId", typeof(string)),
-                new CustomColumn("Date", typeof(DateTime)),
-                new CustomColumn("Agency", typeof(string)),
-                new CustomColumn("TestScore", typeof(double)),
-                new CustomColumn("Certificate", typeof(string))
+                new CustomColumn("CertificateId", typeof(string)),
+                new CustomColumn("Date", typeof(string)),
+                new CustomColumn("AgencyName", typeof(string)),
+                new CustomColumn("TestScore", typeof(double))
                 );
             using (var context = new MyDatabaseContext())
             {
                 using (var con = context.Database.Connection)
                 {
                     con.Open();
-                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckTestScore", CommandType.StoredProcedure, personalID, agency, certificate, dateRegister).ExecuteReader())
+                    using (var reader = DbMyCommand.CreateCmd(context, "dbo.CheckTestScore", CommandType.StoredProcedure, st.PersonalId).ExecuteReader())
                     {
                         DataTableHelper.ReadFromDataReader(reader, ref table);
                     }

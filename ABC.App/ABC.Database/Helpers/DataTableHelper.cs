@@ -44,9 +44,9 @@ namespace ABC.Database.Helpers
                 d.Clear();
                 for (i = 0; i < reader.FieldCount; i++)
                 {
-                    if (reader.IsDBNull(i))
-                        d.Add(null);
-                    else
+                    //if (reader.IsDBNull(i))
+                    //    d.Add(null);
+                    //else
                         d.Add(reader[i]);
                 }
                 output.Rows.Add(d.ToArray());

@@ -7,50 +7,59 @@
              d:DesignWidth="960" d:DesignHeight="640">
     <DockPanel Background="WhiteSmoke" LastChildFill="True">
         <Label Style="{DynamicResource LabelTitleWindow}" Content="TRA CỨU LỊCH THI" DockPanel.Dock="Top"/>
+        <DockPanel LastChildFill="False" DockPanel.Dock="Top" HorizontalAlignment="Left">
+            <RadioButton x:Name="rd_ChuaThi" Content="Chưa Thi" Margin="8" IsChecked="True"/>
+            <RadioButton x:Name="rd_DaThi" Content="Đã Thi" Margin="8"/>
+        </DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <Label Content="CMND" HorizontalAlignment="Left" Width="80" Margin="8"/>
+            <TextBox x:Name="txt_CMND" TextWrapping="Wrap" HorizontalAlignment="Left" Width="80" Margin="8"/>
+            <Button Content="Tra cứu" Width="75" HorizontalAlignment="Left" Margin="8" Click="TraCuu_Click"/>
+        </DockPanel>
 
         <StackPanel Style="{DynamicResource TableContainer}">
-			<DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}" Height="500">
-				<DataGrid.Resources>
-					<Style TargetType="{x:Type DataGridColumnHeader}">
-						<Setter Property="Background" Value="White" />
-						<Setter Property="Height" Value="32" />
-						<Setter Property="FontSize" Value="18" />
-						<Setter Property="Padding" Value="8,4" />
-						<Setter Property="FontWeight" Value="SemiBold" />
-					</Style>
-				</DataGrid.Resources>
+            <DataGrid x:Name="dg"  ItemsSource="{Binding}" AutoGenerateColumns="False" Style="{DynamicResource SimpleTable}" Height="500">
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Height" Value="32" />
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="Padding" Value="8,4" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </Style>
+                </DataGrid.Resources>
 
-				<DataGrid.CellStyle>
-					<Style TargetType="{x:Type DataGridCell}">
-						<Setter Property="Padding" Value="8"/>
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="{x:Type DataGridCell}">
-									<Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-										<ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
-									</Border>
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-				</DataGrid.CellStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="Padding" Value="8"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </DataGrid.CellStyle>
 
-				<DataGrid.Columns>
-					<DataGridTextColumn Header="Mã" Width="80" Binding="{Binding TestScheduleId}"/>
-					<DataGridTextColumn Header="Văn phòng đại diện" Width="350" SortDirection="Ascending" Binding="{Binding AgencyName}" />
-					<DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding CertificateName}" />
-					<DataGridTextColumn Header="Thời gian" Width="*" Binding="{Binding Date}" />
-					<DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Fee}" />
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Mã" Width="80" Binding="{Binding TestScheduleId}"/>
+                    <DataGridTextColumn Header="Văn phòng đại diện" Width="350" SortDirection="Ascending" Binding="{Binding AgencyName}" />
+                    <DataGridTextColumn Header="Chứng chỉ" Width="250" Binding="{Binding CertificateName}" />
+                    <DataGridTextColumn Header="Thời gian" Width="*" Binding="{Binding Date}" />
+                    <DataGridTextColumn Header="Lệ phí" Width="150"  Binding="{Binding Fee}" />
 
-					<DataGridTemplateColumn Width="150">
-						<DataGridTemplateColumn.CellTemplate>
-							<DataTemplate>
-								<Button Style="{DynamicResource ButtonDataGrid}" Content="Đăng ký"/>
-							</DataTemplate>
-						</DataGridTemplateColumn.CellTemplate>
-					</DataGridTemplateColumn>
-				</DataGrid.Columns>
-			</DataGrid>
-		</StackPanel>
+                    <DataGridTemplateColumn x:Name="dg_creg" Width="150">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Style="{DynamicResource ButtonDataGrid}" Content="Đăng ký" Click="Reg_Click"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
     </DockPanel>
 </UserControl>

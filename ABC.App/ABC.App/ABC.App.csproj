@@ -76,6 +76,9 @@
     <Compile Include="Views\Layouts\UserControls\TestScheduleWindow.xaml.cs">
       <DependentUpon>TestScheduleWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Layouts\UserControls\Window1.xaml.cs">
+      <DependentUpon>Window1.xaml</DependentUpon>
+    </Compile>
     <Page Include="Views\Layouts\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -89,6 +92,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Layouts\UserControls\TestScheduleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Layouts\UserControls\Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -39,9 +39,15 @@ namespace ABC.Database.ObjectRepositories
 
         public void Add(Student which)
         {
+
             using (var context = new MyDatabaseContext())
             {
-                context.Database.ExecuteSqlCommand("exec dbo.AddStudent @id, @fn, @bd, @pn", which.PersonalId,which.FullName,which.Birthday,which.PhoneNumber);
+                using (var con = context.Database.Connection)
+                {
+                    con.Open();
+                    int a = DbMyCommand.CreateCmd(context, "dbo.AddStudent", CommandType.StoredProcedure, which.PersonalId, which.FullName, which.Birthday, which.PhoneNumber).ExecuteNonQuery();
+                    con.Close();
+                }
             }
             NotifyPropertyChanged("All");
         }

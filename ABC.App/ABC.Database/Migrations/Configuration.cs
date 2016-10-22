@@ -3,6 +3,7 @@ namespace ABC.Database.Migrations
     using ABC.Database.ObjectContexts;
     using ABC.Database.Objects;
     using System;
+    using System.Data;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -126,7 +127,7 @@ namespace ABC.Database.Migrations
         {
             Random rand = new Random();
             int[] times = { 8, 14 };
-            int day, month, numberOfStudents;
+            int day, month;//, numberOfStudents;
 
             string[] certificates = {
                 "TOEIC",
@@ -138,9 +139,9 @@ namespace ABC.Database.Migrations
 
             for (int index = 0; index < 100; index++)
             {
-                month = rand.Next(3, 9);
+                month = rand.Next(9, 12);
                 day = rand.Next(7, 28);
-                numberOfStudents = rand.Next(1, 16);
+                //numberOfStudents = rand.Next(1, 16);
 
                 context.TestSchedules.AddOrUpdate(
                     t => t.TestScheduleId,
@@ -170,8 +171,8 @@ namespace ABC.Database.Migrations
                     {
                         StudentId = st.PersonalId,
                         TestScheduleId = schedule.TestScheduleId,
-                        DateReg = new DateTime(2016, datereg.Month, datereg.Day, rand.Next(8, 17), rand.Next(59), rand.Next(59)),
-                        TestScore = rand.Next(30, 100)
+                        DateReg = new DateTime(2016, datereg.Month, schedule.Date.Day-rand.Next(3,7), rand.Next(8, 17), rand.Next(59), rand.Next(59)),
+                        TestScore = DateTime.Now >= schedule.Date ? rand.Next(30,100) : 0
                     }
                 );
             }

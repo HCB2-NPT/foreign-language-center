@@ -25,23 +25,16 @@ namespace ABC.App.Views.Layouts.UserControls
         public TestResultsWindow()
         {
             InitializeComponent();
-            Agencies.ItemsSource = new AgencyRepository().All;
-            Certificates.ItemsSource = new CertificateRepository().All;
         }
 
         private void getResults(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.DataContext = new TestScheduleRepository().CheckTestScore(
-                Agencies.SelectedValue.ToString(), 
-                Certificates.SelectedValue.ToString(), 
-                PersonalID.Text, 
-                TestScheduleDate.SelectedDate.Value.Date.ToShortDateString());
+            dg.DataContext = new TestScheduleRepository().CheckTestScore(new Student{PersonalId=PersonalID.Text});
         }
 
         private void clearResults(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.DataContext = null;
-            TestScheduleDate.SelectedDate = DateTime.Today;
+            dg.DataContext = null;
             PersonalID.Clear();
         }
     }

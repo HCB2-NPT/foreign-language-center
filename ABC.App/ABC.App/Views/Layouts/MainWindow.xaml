@@ -4,19 +4,20 @@
         Title="Phần mềm đăng ký dự thi chứng chỉ ngoại ngữ" Width="960" Height="640" 
         WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Grid Background="WhiteSmoke">
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="64" />
-    		<RowDefinition Height="Auto"/>
-    	</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-		<StackPanel Grid.Row="0" Background="#FFD75C37" HorizontalAlignment="Stretch">
-			<DockPanel Grid.Row="0" Height="64" HorizontalAlignment="Left">
-				<Button x:Name="btnTraCuuLichThi" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu lịch thi" Click="clickTestSchedules" />
-				<Button x:Name="btnTraCuuKetQua" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu kết quả" Click="clickTestResults"/>
-				<Button x:Name="btnDangKyDuThi" Style="{DynamicResource ButtonToolbar}" Content="Đăng ký dự thi" Click="clickTestRegister"/>
-			</DockPanel>
-		</StackPanel>
-		
-		<Grid Grid.Row="1" x:Name="MainContent"></Grid>		
+        <StackPanel Grid.Row="0" Background="#FFD75C37" HorizontalAlignment="Stretch">
+            <DockPanel Grid.Row="0" Height="64" HorizontalAlignment="Left">
+                <Button x:Name="btnTraCuuLichThi" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu lịch thi" Click="clickTestSchedules" />
+                <Button x:Name="btnTraCuuKetQua" Style="{DynamicResource ButtonToolbar}" Content="Tra cứu kết quả" Click="clickTestResults"/>
+                <Button x:Name="btnDangKyDuThi" Style="{DynamicResource ButtonToolbar}" Content="Thống kê" Click="clickTestRegister"/>
+            </DockPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="1" x:Name="MainContent"></Grid>
+        <Button Content="+ Học Viên" HorizontalAlignment="Right" VerticalAlignment="Top" Width="75" Margin="16" Height="30" Click="ThemHocVien_Click"/>
     </Grid>
 </Window>
