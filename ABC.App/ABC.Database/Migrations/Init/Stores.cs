@@ -18,14 +18,14 @@
                 },
                 body:
             @" BEGIN
-                SET TRANSACTION ISOLATION LEVEL read committed  
+                Set transaction isolation level serializable 
                     begin transaction
                     if not exists (select PersonalID From Student where PersonalID = @p0)
                     begin
 		                if @p2 <= GetDate()
 		                begin
     		                begin try
-    			                Insert into Student values (@p0,@p1,@p2,@p3)
+    			                Insert into Student(PersonalId,FullName,Birthday,PhoneNumber) values (@p0,@p1,@p2,@p3)
     			                commit
     			                return
     		                end try
@@ -48,24 +48,47 @@
                     p1 = p.String()
                 },
                 body:
-                @"  BEGIN
-                    begin transaction
-                    SET TRANSACTION ISOLATION LEVEL read committed
-	                if not exists (select * from Register where @p0=StudentId and @p1=TestScheduleId)
-	                    begin
-		                    begin try
-			                    declare @datereg datetime
-			                    set @datereg = GETDATE()
-			                    Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,@datereg)
-			                    commit transaction
+                @"  Set transaction isolation level serializable
+                begin transaction
+	                begin 
+		                declare @datereg datetime
+                        select @datereg=Date from TestSchedule where TestSchedule.TestScheduleId = @p1
+                        if exists(select Date
+                                    from TestSchedule ,Register
+                                    where DATEDIFF(HOUR,@datereg,Date) between -120 and 120
+                                    and Register.TestScheduleId = TestSchedule.TestScheduleId
+                                    and Register.StudentId = @p0
+                                    )
+		                begin
+			                rollback
+			                return
+		                end
+		                else
+		                begin
+			                declare @temp int 
+			                select @temp=count(Register.StudentId)
+			                from TestSchedule left join Register on TestSchedule.TestScheduleId = Register.TestScheduleId
+			                where TestSchedule.TestScheduleId = @p1
+			                group by TestSchedule.TestScheduleId
+			
+			                if @temp < 16
+                            begin
+			                    begin try
+				                    Insert into Register(StudentId,TestScheduleId,DateReg) values (@p0,@p1,getdate())
+				                    commit transaction
+			                    end try
+			                    begin catch
+				                    rollback
+				                    return
+			                    end catch
+                            end
+                            else
+                            begin
+                                rollback
                                 return
-		                    end try
-		                    begin catch
-			                    rollback
-                                return
-		                    end catch
-	                    end
-                    END"
+                            end
+		                end
+	                end"
             );
             #endregion
             #region c dbo.ListTested
@@ -76,7 +99,7 @@
                 },
                 body:
                 @"
-                Set transaction isolation level read uncommitted
+                Set transaction isolation level read committed
                 begin transaction
 	                if exists (select * from Student where PersonalId=@p0)
 	                begin
@@ -170,9 +193,10 @@
                 ");
             #endregion
             #region f dbo.CheckTestScore
-            CreateStoredProcedure("dbo.CheckTestScore",p=>new{
+            CreateStoredProcedure("dbo.CheckTestScore", p => new
+            {
                 p0 = p.String()
-            },body:
+            }, body:
             @"
             Set transaction isolation level read uncommitted
             begin transaction
@@ -200,7 +224,7 @@
                 p0 = p.String()
             }, body:
             @"
-                set transaction isolation level read committed
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
@@ -230,7 +254,7 @@
                 p2 = p.Int()
             }, body:
             @"
-                set transaction isolation level read committed
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
@@ -264,7 +288,7 @@
                 p2 = p.Int()
             }, body:
             @"
-                set transaction isolation level read committed
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
@@ -286,7 +310,7 @@
                 p0 = p.String()
             }, body:
             @"
-                set transaction isolation level Serializable
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
@@ -319,7 +343,7 @@
                 p2 = p.Int()
             }, body:
             @"
-                set transaction isolation level Serializable
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
@@ -356,7 +380,7 @@
                 p2 = p.Int()
             }, body:
             @"
-                set transaction isolation level Serializable
+                Set transaction isolation level serializable
                 begin transaction
                 if exists (select * from Certificate where Name=@p0)
                 begin
